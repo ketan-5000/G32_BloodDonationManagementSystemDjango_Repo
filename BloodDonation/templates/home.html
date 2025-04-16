@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title_block %}Home | Red Cross Blood Donation{% endblock %}
+{% block style %}
+<style>
+    .small-arrow-btn {
+        width: 10px;
+        height: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        z-index: 10;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: auto;
+    }
+</style>
+{% endblock %}
+
+
+{% block main_block %}
+
+    <div class="text-center">
+        <h1 class="text-danger">Welcome to Red Cross Blood Donation</h1>
+        <p>Save lives by donating blood. Find a donation center near you!</p>
+      
+      <div id="donationCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <a href="{% url 'add_donation' %}">
+              <img src="{% static 'images/donate.png' %}" class="d-block w-100 img-fluid rounded shadow-lg" alt="Donate Blood">
+            </a>
+          </div>
+          <div class="carousel-item">
+            <a href="{% url 'request_blood' %}">
+              <img src="{% static 'images/request.png' %}" class="d-block w-100 img-fluid rounded shadow-lg" alt="Request Blood">
+            </a>
+          </div>
+          {% comment %} <div class="carousel-item">
+            <a href="{% url 'home' %}">
+              <img src="{% static 'images/BldDontnCamp.jpeg' %}" class="d-block w-100 img-fluid rounded shadow-lg" alt="Blood Donation Camp">
+            </a>
+          </div> {% endcomment %}
+        </div>
+      
+        <!-- Arrows -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#donationCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#donationCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      
+        
+        <br><br>
+        <a href="{% url 'dashboard' %}" class="btn btn-danger btn-lg">Visit Dashboard</a>
+    </div>
+
+    <div class="mt-4">
+        <h2 class="text-primary">Why Donate Blood?</h2>
+        <ul class="list-group">
+            <li class="list-group-item">Every 2 seconds, someone needs blood.</li>
+            <li class="list-group-item">One donation can save up to three lives.</li>
+            <li class="list-group-item">Blood cannot be manufactured; it must come from donors.</li>
+        </ul>
+    </div>    
+<br><br>
+<div>
+  <img src="{% static 'images/info.png' %}" class="d-block w-100 img-fluid rounded shadow-lg" alt="Donate Blood">
+</div>
+
+<br><br>
+<h2 class="text-primary">Check If You Are Eligible</h2>
+    <form method="POST" action="{% url 'home' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="age" class="form-label">Enter Your Age:</label>
+            <input type="number" class="form-control" id="age" name="age" required>
+        </div>
+        <div class="mb-3">
+            <label for="weight" class="form-label">Enter Your Weight (kg):</label>
+            <input type="number" class="form-control" id="weight" name="weight" required>
+        </div>
+        <button type="submit" class="btn btn-success">Check Eligibility</button>
+    </form>
+    
+    
+{% endblock %}
+

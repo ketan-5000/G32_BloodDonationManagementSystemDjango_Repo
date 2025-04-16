@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block main_block %}
+<div class="container mt-4">
+    <h2 class="text-center">Request Blood</h2>
+    <div class="row">
+        {% for blood_group, pints in blood_data.items %}
+        <div class="col-md-3 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">{{ blood_group }}</h5>
+                    <p class="card-text">Available Pints: {{ pints }}</p>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="blood_group" value="{{ blood_group }}">
+                        <button type="submit" class="btn btn-primary">
+                            Request
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if donors %}
+    <h3 class="mt-4">Available Donors</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Pints Donated</th>
+                <th>City</th>
+                <th>Weight</th>
+                <th>Age</th>
+                <th>Donation Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for donor in donors %}
+            <tr>
+                <td>{{ donor.donor.name }}</td>
+                <td>{{ donor.email }}</td>
+                <td>{{ donor.amount }}</td>
+                <td>{{ donor.city }}</td>
+                <td>{{ donor.weight }} kg</td>
+                <td>{{ donor.age }}</td>
+                <td>{{ donor.donation_date|date:"Y-m-d" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title_block %}Dashboard{% endblock %}
+
+{% block main_block %}
+<div class="container mt-5">
+    <h2 class="text-center">Welcome, {{ request.user.name }}!</h2>
+    
+    <div class="text-center mt-4">
+        <a href="{% url 'add_donation' %}" class="btn btn-danger btn-lg mr-3">Donate Blood</a>
+        <a href="{% url 'request_blood' %}" class="btn btn-primary btn-lg">Request Blood</a>
+        {% comment %} <a href="{% url 'home' %}" class="btn btn-warning btn-lg">Organise a Blood Donation Camp</a>
+        <a href="{% url 'home' %}" class="btn btn-success btn-lg">Search for Blood Donation Camps</a> {% endcomment %}
+    </div>
+    
+    <div class="row mt-4">
+        {% for blood_group, total_pints in blood_data.items %}
+        <div class="col-md-3 mb-4">
+            <div class="card shadow">
+                <div class="card-header text-center">
+                    <h4 class="mb-0">{{ blood_group }}</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="text-center">Pints Available: {{ total_pints }}</h5>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h3 class="text-center mt-5">Recent Blood Donations</h3>
+
+    <form method="get" class="form-inline justify-content-center mb-3">
+        <label for="city" class="mr-2">City:</label>
+        <select name="city" id="city" class="form-control mr-3">
+            <option value="">All</option>
+            {% for city in city_choices %}
+            <option value="{{ city }}" {% if selected_city == city %}selected{% endif %}>{{ city }}</option>
+            {% endfor %}
+        </select>
+    
+        <label for="blood_group" class="mr-2">Blood Group:</label>
+        <select name="blood_group" id="blood_group" class="form-control mr-3">
+            <option value="">All</option>
+            {% for bg in blood_group_choices %}
+            <option value="{{ bg }}" {% if selected_blood_group == bg %}selected{% endif %}>{{ bg }}</option>
+            {% endfor %}
+        </select>
+    
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-danger btn-md mr-3">Reset</a>
+        
+    </form>
+    
+    
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Donor Name</th>
+                <th>Blood Group</th>
+                <th>Amount Donated</th>
+                <th>City</th>
+                <th>Date</th>
+                {% if request.user.is_superuser %}
+                <th>Actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for donation in all_recent_donations %}
+            <tr>
+                <td>{{ donation.donor.name }}</td>
+                <td>{{ donation.blood_group }}</td>
+                <td>{{ donation.amount }}</td>
+                <td>{{ donation.city }}</td>
+                <td>{{ donation.donation_date|date:"F d, Y" }}</td>
+                {% if request.user.is_superuser %}
+                <td>
+                    <a href="{% url 'edit_donation' donation.id %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'delete_donation' donation.id %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr><td colspan="{% if request.user.is_superuser %}6{% else %}5{% endif %}" class="text-center">No donations found for selected filters.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    
+    
+</div>
+{% endblock %}
